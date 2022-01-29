@@ -2,7 +2,7 @@ from cgi import test
 import pandas
 import random
 import string
-
+from art import *
 
 # Destroyer
 destroyerColumn = random.randint(0, 25)
@@ -217,12 +217,12 @@ print(f'carrier {carrier}')
 
 
 ships = [destroyer, submarine, cruiser, battleship, carrier]
-# random.shuffle(ships)
+
+
+
 
 df = pandas.DataFrame
 area = []
-# area2 = []
-# area3 = []
 col = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
@@ -231,11 +231,22 @@ for i in range(0, 26, 1):
 battle = df(area, columns=col)
 battle.index += 1
 
-# testing= df(ships)
-# print(testing)
-while True:
-    print("WELCOME TO BATTLESHIP!!!")
+
+shipsSunk=[]
+turns=100
+Welcome=text2art("WELCOME   TO   BATTLESHIP !!!")
+Win=text2art("YOU   WIN !!!")
+Lose=text2art("YOU LOSE !!!")
+print(Welcome)
+print('You have 100 turns to sink the fleet!')
+while True: 
+    if turns == 100:
+        input("Press Enter to start...")
+        print(battle)
     # print(ships)
+    print(f'You have {turns} turns left')
+    turns -= 1
+    print(f'Sunken Ships: {shipsSunk}')
     while True:
         try:
             rowInput = int(input("Choose a row number: "))
@@ -243,7 +254,7 @@ while True:
         except ValueError:
             print('Please enter an integer between 1 and 25')
         else:
-            if rowInput < 1:  # this is faster
+            if rowInput < 1: 
                 print('Out of Range')
                 continue
             else:
@@ -256,6 +267,8 @@ while True:
         else:
             print('Please enter a letter')
             continue
+    
+
 
     if rowInput == destroyer[0][0] and colInput == destroyer[0][1] or rowInput == destroyer[1][0] and colInput == destroyer[1][1]:
         battle.at[int(rowInput), colInput.upper()] = 'DES'
@@ -276,3 +289,41 @@ while True:
     else:
         battle.at[rowInput, colInput.upper()] = ' '
         print(battle)
+
+
+    if battle.at[destroyer[0][0],str(destroyer[0][1]).upper()] == 'DES' and battle.at[destroyer[1][0],str(destroyer[1][1]).upper()] == 'DES' :
+        if 'Destroyer' not in shipsSunk:
+            print("You Sunk the Destroyer!")
+            shipsSunk.append('Destroyer')
+
+
+    if battle.at[submarine[0][0],str(submarine[0][1] ).upper()] == 'SUB' and battle.at[submarine[1][0] ,str(submarine[1][1]).upper()] == 'SUB' and battle.at[submarine[2][0]  ,str(submarine[2][1]).upper()] == 'SUB' :
+        if 'Submarine' not in shipsSunk:
+            print("You Sunk the Submarine!")
+            shipsSunk.append('Submarine')
+
+    if battle.at[cruiser[0][0],str(cruiser[0][1] ).upper()] == 'CRU' and battle.at[cruiser[1][0] ,str(cruiser[1][1]).upper()] == 'CRU' and battle.at[cruiser[2][0]  ,str(cruiser[2][1]).upper()] == 'CRU' :
+            if 'Cruiser' not in shipsSunk:
+                print("You Sunk the Cruiser!")
+                shipsSunk.append('Cruiser')
+
+    if battle.at[battleship[0][0],str(battleship[0][1] ).upper()] == 'BAT' and battle.at[battleship[1][0] ,str(battleship[1][1]).upper()] == 'BAT' and battle.at[battleship[2][0]  ,str(battleship[2][1]).upper()] == 'BAT' and battle.at[battleship[3][0]  ,str(battleship[3][1]).upper()] == 'BAT' :
+            if 'Battleship' not in shipsSunk:
+                print("You Sunk the Battleship!")
+                shipsSunk.append('Battleship')  
+
+    if battle.at[carrier[0][0],str(carrier[0][1] ).upper()] == 'BAT' and battle.at[carrier[1][0] ,str(carrier[1][1]).upper()] == 'BAT' and battle.at[carrier[2][0]  ,str(carrier[2][1]).upper()] == 'BAT' and battle.at[carrier[3][0]  ,str(carrier[3][1]).upper()] == 'BAT'  and battle.at[carrier[4][0]  ,str(carrier[4][1]).upper()] == 'BAT' :
+            if 'Carrier' not in shipsSunk:
+                print("You Sunk the Carrier!")
+                shipsSunk.append('Carrier')
+
+    if len(shipsSunk) == 5:
+        print(Win)
+        break
+    elif turns == 0:
+        print(Lose)
+        break        
+
+
+
+    
