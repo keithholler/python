@@ -1,8 +1,13 @@
-from cgi import test
 import pandas
 import random
 import string
-from art import *
+from art import text2art
+import string
+import sys
+from termcolor import colored, cprint
+import colorama
+from colorama import Fore, Back, Style
+colorama.init(autoreset=True)
 
 # Destroyer
 destroyerColumn = random.randint(0, 25)
@@ -79,7 +84,7 @@ if random.randint(0, 1) == 0:
         cruiserRow3 = cruiserRow+2
         cruiserCol2 = string.ascii_lowercase[cruiserColumn]
         cruiserCol3 = string.ascii_lowercase[cruiserColumn]
-else:        
+else:
     if not cruiserRow > 23:
         cruiserRow2 = cruiserRow+1
         cruiserRow3 = cruiserRow+2
@@ -154,7 +159,7 @@ if random.randint(0, 1) == 0:
         carrierCol3 = string.ascii_lowercase[carrierColumn + 2]
         carrierCol4 = string.ascii_lowercase[carrierColumn + 3]
         carrierCol5 = string.ascii_lowercase[carrierColumn + 4]
- 
+
     else:
         carrierRow2 = carrierRow+1
         carrierRow3 = carrierRow+2
@@ -190,43 +195,41 @@ carrier = [[carrierRow, string.ascii_lowercase[carrierColumn]],
            [carrierRow2, carrierCol2], [carrierRow3, carrierCol3],
            [carrierRow4, carrierCol4], [carrierRow5, carrierCol5]]
 
+'''Cheat Locations'''
 print(f'destroyer {destroyer}')
 print(f'submarine {submarine}')
 print(f'cruiser {cruiser}')
 print(f'battleship {battleship}')
 print(f'carrier {carrier}')
-
-
 ships = [destroyer, submarine, cruiser, battleship, carrier]
 
 
-
-
+'''Battlefield'''
 df = pandas.DataFrame
 area = []
 col = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
 for i in range(0, 26, 1):
-    area.append(['0']*26)
+    area.append(['X']*26)
 battle = df(area, columns=col)
 battle.index += 1
 
-
-shipsSunk=[]
-turns=50
-Welcome=text2art("WELCOME   TO   BATTLESHIP !!!")
-Win=text2art("YOU   WIN !!!")
-Lose=text2art("YOU LOSE !!!")
-print(Welcome)
-print(f'You have {turns} turns to sink the fleet!')
-while True: 
-    if turns == 50:
+'''Start of Game'''
+shipsSunk = []
+TURNS = 50
+Welcome = text2art("WELCOME   TO   BATTLESHIP !!!")
+Win = text2art("YOU   WIN !!!")
+Lose = text2art("YOU   LOSE !!!")
+cprint(Welcome, 'yellow')
+print(f'You have {TURNS} turns to sink the fleet!')
+while True:
+    if TURNS == 50:
         input("Press Enter to start...")
         print(battle)
     # print(ships)
-    print(f'You have {turns} turns left')
-    turns -= 1
+    print(f'You have {TURNS} turns left')
+    TURNS -= 1
     print(f'Sunken Ships: {shipsSunk}')
     while True:
         try:
@@ -235,7 +238,7 @@ while True:
         except ValueError:
             print('Please enter an integer between 1 and 25')
         else:
-            if rowInput < 1 or rowInput > 25: 
+            if rowInput < 1 or rowInput > 26:
                 print('Out of Range')
                 continue
             else:
@@ -248,69 +251,64 @@ while True:
         else:
             print('Please enter a letter')
             continue
-    
 
-
+    '''If location from user matches ships location'''
     if rowInput == destroyer[0][0] and colInput == destroyer[0][1] or rowInput == destroyer[1][0] and colInput == destroyer[1][1]:
         battle.at[int(rowInput), colInput.upper()] = 'DE'
         print(battle)
-        print('You hit the Destroyer!!!')
+        cprint('You hit the Destroyer!!!', 'green')
     elif rowInput == submarine[0][0] and colInput == submarine[0][1] or rowInput == submarine[1][0] and colInput == submarine[1][1] or rowInput == submarine[2][0] and colInput == submarine[2][1]:
         battle.at[int(rowInput), colInput.upper()] = 'SU'
         print(battle)
-        print('You hit the Submarine!!!')
+        cprint('You hit the Submarine!!!', 'green')
     elif rowInput == cruiser[0][0] and colInput == cruiser[0][1] or rowInput == cruiser[1][0] and colInput == cruiser[1][1] or rowInput == cruiser[2][0] and colInput == cruiser[2][1]:
         battle.at[int(rowInput), colInput.upper()] = 'CR'
         print(battle)
-        print('You hit the Cruiser!!!')
+        cprint('You hit the Cruiser!!!', 'green')
     elif rowInput == battleship[0][0] and colInput == battleship[0][1] or rowInput == battleship[1][0] and colInput == battleship[1][1] or rowInput == battleship[2][0] and colInput == battleship[2][1] or rowInput == battleship[3][0] and colInput == battleship[3][1]:
         battle.at[int(rowInput), colInput.upper()] = 'BA'
         print(battle)
-        print('You hit the Battleship!!!')
+        cprint('You hit the Battleship!!!', 'green')
     elif rowInput == carrier[0][0] and colInput == carrier[0][1] or rowInput == carrier[1][0] and colInput == carrier[1][1] or rowInput == carrier[2][
             0] and colInput == carrier[2][1] or rowInput == carrier[3][0] and colInput == carrier[3][1] or rowInput == carrier[4][0] and colInput == carrier[4][1]:
         battle.at[int(rowInput), colInput.upper()] = 'CA'
         print(battle)
-        print('You hit the Carrier!!!')
+        cprint('You hit the Carrier!!!', 'green')
     else:
         battle.at[rowInput, colInput.upper()] = ' '
         print(battle)
-        print("You Missed!!!")
+        cprint("You Missed!!!", 'red')
 
-
-    if battle.at[destroyer[0][0],str(destroyer[0][1]).upper()] == 'DE' and battle.at[destroyer[1][0],str(destroyer[1][1]).upper()] == 'DE' :
+    '''IF all ship locations are hit show it has sunk'''
+    if battle.at[destroyer[0][0], str(destroyer[0][1]).upper()] == 'DE' and battle.at[destroyer[1][0], str(destroyer[1][1]).upper()] == 'DE':
         if 'Destroyer' not in shipsSunk:
             print("You Sunk the Destroyer!")
             shipsSunk.append('Destroyer')
 
-
-    if battle.at[submarine[0][0],str(submarine[0][1] ).upper()] == 'SU' and battle.at[submarine[1][0] ,str(submarine[1][1]).upper()] == 'SU' and battle.at[submarine[2][0]  ,str(submarine[2][1]).upper()] == 'SU' :
+    if battle.at[submarine[0][0], str(submarine[0][1]).upper()] == 'SU' and battle.at[submarine[1][0], str(submarine[1][1]).upper()] == 'SU' and battle.at[submarine[2][0], str(submarine[2][1]).upper()] == 'SU':
         if 'Submarine' not in shipsSunk:
             print("You Sunk the Submarine!")
             shipsSunk.append('Submarine')
 
-    if battle.at[cruiser[0][0],str(cruiser[0][1] ).upper()] == 'CR' and battle.at[cruiser[1][0] ,str(cruiser[1][1]).upper()] == 'CR' and battle.at[cruiser[2][0]  ,str(cruiser[2][1]).upper()] == 'CR' :
-            if 'Cruiser' not in shipsSunk:
-                print("You Sunk the Cruiser!")
-                shipsSunk.append('Cruiser')
+    if battle.at[cruiser[0][0], str(cruiser[0][1]).upper()] == 'CR' and battle.at[cruiser[1][0], str(cruiser[1][1]).upper()] == 'CR' and battle.at[cruiser[2][0], str(cruiser[2][1]).upper()] == 'CR':
+        if 'Cruiser' not in shipsSunk:
+            print("You Sunk the Cruiser!")
+            shipsSunk.append('Cruiser')
 
-    if battle.at[battleship[0][0],str(battleship[0][1] ).upper()] == 'BA' and battle.at[battleship[1][0] ,str(battleship[1][1]).upper()] == 'BA' and battle.at[battleship[2][0]  ,str(battleship[2][1]).upper()] == 'BA' and battle.at[battleship[3][0]  ,str(battleship[3][1]).upper()] == 'BA' :
-            if 'Battleship' not in shipsSunk:
-                print("You Sunk the Battleship!")
-                shipsSunk.append('Battleship')  
+    if battle.at[battleship[0][0], str(battleship[0][1]).upper()] == 'BA' and battle.at[battleship[1][0], str(battleship[1][1]).upper()] == 'BA' and battle.at[battleship[2][0], str(battleship[2][1]).upper()] == 'BA' and battle.at[battleship[3][0], str(battleship[3][1]).upper()] == 'BA':
+        if 'Battleship' not in shipsSunk:
+            print("You Sunk the Battleship!")
+            shipsSunk.append('Battleship')
 
-    if battle.at[carrier[0][0],str(carrier[0][1] ).upper()] == 'CA' and battle.at[carrier[1][0] ,str(carrier[1][1]).upper()] == 'CA' and battle.at[carrier[2][0]  ,str(carrier[2][1]).upper()] == 'CA' and battle.at[carrier[3][0]  ,str(carrier[3][1]).upper()] == 'CA'  and battle.at[carrier[4][0]  ,str(carrier[4][1]).upper()] == 'CA' :
-            if 'Carrier' not in shipsSunk:
-                print("You Sunk the Carrier!")
-                shipsSunk.append('Carrier')
+    if battle.at[carrier[0][0], str(carrier[0][1]).upper()] == 'CA' and battle.at[carrier[1][0], str(carrier[1][1]).upper()] == 'CA' and battle.at[carrier[2][0], str(carrier[2][1]).upper()] == 'CA' and battle.at[carrier[3][0], str(carrier[3][1]).upper()] == 'CA' and battle.at[carrier[4][0], str(carrier[4][1]).upper()] == 'CA':
+        if 'Carrier' not in shipsSunk:
+            print("You Sunk the Carrier!")
+            shipsSunk.append('Carrier')
 
+    '''Win and lose logic'''
     if len(shipsSunk) == 5:
-        print(Win)
+        cprint(Win, 'green')
         break
-    elif turns == 0:
-        print(Lose)
-        break        
-
-
-
-    
+    elif TURNS == 0:
+        cprint(Lose, 'red')
+        break
